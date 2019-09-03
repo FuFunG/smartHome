@@ -13,32 +13,55 @@ import com.example.smarthome.R;
 import com.example.smarthome.adapter.FixturesListAdapter;
 import com.example.smarthome.adapter.RoomListAdapter;
 import com.example.smarthome.asyncTask.RoomAsyncTask;
+import com.example.smarthome.model.PreferencesUtils;
+import com.example.smarthome.model.Room;
 import com.example.smarthome.model.RoomModel;
 
 public class FixturesActivity extends AppCompatActivity {
-    private final static String TAG = "MainActivity";
+    private final static String TAG = "FixturesActivity";
 
     private ListView fixturesList;
     private RoomAsyncTask.RoomAsyncCallback roomAsyncCallback;
     private RoomModel roomModel;
+    private PreferencesUtils preferencesUtils;
+    private int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fixtures);
+        preferencesUtils = PreferencesUtils.getInstance(this);
+        roomModel = preferencesUtils.getRoomModel();
 
         initView();
         initListener();
         initCallback();
 
         Bundle bundle = this.getIntent().getExtras();
-        String[] fixtures = bundle.getStringArray("fixtures");
-        boolean[] isOn = bundle.getBooleanArray("isOn");
-        FixturesListAdapter adapter = new FixturesListAdapter(FixturesActivity.this, fixtures, isOn);
+//        String[] fixtures = bundle.getStringArray("fixtures");
+//        boolean[] isOn = bundle.getBooleanArray("isOn");
+        position = bundle.getInt("position");
+        Room room = roomModel.rooms.get(position);
+//        String[] fixtures = room.getFixtures();
+//        Boolean[] isOn = room.getIsOn();
+        FixturesListAdapter adapter = new FixturesListAdapter(FixturesActivity.this, room);
         fixturesList.setAdapter(adapter);
 
 //        RoomAsyncTask roomAsyncTask = new RoomAsyncTask(roomAsyncCallback);
 //        roomAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(TAG, "onResume");
+        preferencesUtils = PreferencesUtils.getInstance(this);
+        roomModel = preferencesUtils.getRoomModel();
+        Bundle bundle = this.getIntent().getExtras();
+        position = bundle.getInt("position");
+        Room room = roomModel.rooms.get(position);
+        FixturesListAdapter adapter = new FixturesListAdapter(FixturesActivity.this, room);
+        fixturesList.setAdapter(adapter);
     }
 
     public void initView() {

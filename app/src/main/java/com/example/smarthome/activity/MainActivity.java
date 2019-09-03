@@ -14,6 +14,7 @@ import com.example.smarthome.R;
 import com.example.smarthome.adapter.FixturesListAdapter;
 import com.example.smarthome.adapter.RoomListAdapter;
 import com.example.smarthome.asyncTask.RoomAsyncTask;
+import com.example.smarthome.model.PreferencesUtils;
 import com.example.smarthome.model.RoomModel;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,19 +24,28 @@ public class MainActivity extends AppCompatActivity {
     private RoomAsyncTask.RoomAsyncCallback roomAsyncCallback;
     private RoomModel roomModel;
     private boolean[] bundleIsOn;
+    private PreferencesUtils preferencesUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        preferencesUtils = PreferencesUtils.getInstance(this);
 
         initView();
         initListener();
         initCallback();
 
-
-        RoomAsyncTask roomAsyncTask = new RoomAsyncTask(roomAsyncCallback);
-        roomAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        if (preferencesUtils.getRoomModel() != null) {
+            Log.i(TAG, "RoomModel exsit!");
+            roomModel = preferencesUtils.getRoomModel();
+            RoomListAdapter adapter = new RoomListAdapter(MainActivity.this, roomModel.toStringArray());
+            roomList.setAdapter(adapter);
+        } else {
+            Log.i(TAG, "RoomModel not exsit!");
+            RoomAsyncTask roomAsyncTask = new RoomAsyncTask(roomAsyncCallback);
+            roomAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
     }
 
     public void initView() {
@@ -54,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
                     bundleIsOn[i] = roomModel.rooms.get(position).getIsOn()[i];
                 }
                 bundle.putBooleanArray("isOn", bundleIsOn);
+                bundle.putInt("position", position);
                 Intent intent = new Intent(MainActivity.this, FixturesActivity.class);
                 intent.putExtras(bundle);
                 startActivity(intent);
@@ -66,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void roomResponse(RoomModel rooms) {
                 roomModel = rooms;
+                preferencesUtils.saveRoomModel(rooms);
                 RoomListAdapter adapter = new RoomListAdapter(MainActivity.this, roomModel.toStringArray());
                 roomList.setAdapter(adapter);
             }
