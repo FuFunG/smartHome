@@ -32,7 +32,6 @@ public class FixturesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_fixtures);
         preferencesUtils = PreferencesUtils.getInstance(this);
         roomModel = preferencesUtils.getRoomModel();
-        Log.i(TAG, roomModel.rooms.size()+"");
 
         initView();
         initListener();
@@ -50,6 +49,19 @@ public class FixturesActivity extends AppCompatActivity {
 
 //        RoomAsyncTask roomAsyncTask = new RoomAsyncTask(roomAsyncCallback);
 //        roomAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(TAG, "onResume");
+        preferencesUtils = PreferencesUtils.getInstance(this);
+        roomModel = preferencesUtils.getRoomModel();
+        Bundle bundle = this.getIntent().getExtras();
+        position = bundle.getInt("position");
+        Room room = roomModel.rooms.get(position);
+        FixturesListAdapter adapter = new FixturesListAdapter(FixturesActivity.this, room);
+        fixturesList.setAdapter(adapter);
     }
 
     public void initView() {

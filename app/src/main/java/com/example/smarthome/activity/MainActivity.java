@@ -36,8 +36,16 @@ public class MainActivity extends AppCompatActivity {
         initListener();
         initCallback();
 
-        RoomAsyncTask roomAsyncTask = new RoomAsyncTask(roomAsyncCallback);
-        roomAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        if (preferencesUtils.getRoomModel() != null) {
+            Log.i(TAG, "RoomModel exsit!");
+            roomModel = preferencesUtils.getRoomModel();
+            RoomListAdapter adapter = new RoomListAdapter(MainActivity.this, roomModel.toStringArray());
+            roomList.setAdapter(adapter);
+        } else {
+            Log.i(TAG, "RoomModel not exsit!");
+            RoomAsyncTask roomAsyncTask = new RoomAsyncTask(roomAsyncCallback);
+            roomAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
     }
 
     public void initView() {

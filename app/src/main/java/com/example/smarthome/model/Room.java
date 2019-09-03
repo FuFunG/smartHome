@@ -37,4 +37,8 @@ public class Room {
     public void setIsOn(Boolean[] isOn) {
         this.isOn = isOn;
     }
+
+    public void updateFixtures(int position, Boolean isOn){
+        this.isOn[position] = isOn;
+    }
 }

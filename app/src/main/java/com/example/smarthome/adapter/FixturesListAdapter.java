@@ -15,11 +15,14 @@ import android.widget.TextView;
 import com.example.smarthome.R;
 import com.example.smarthome.model.PreferencesUtils;
 import com.example.smarthome.model.Room;
+import com.example.smarthome.model.RoomModel;
 
 public class FixturesListAdapter extends ArrayAdapter<String> {
     private final static String TAG = "FixturesListAdapter";
     private PreferencesUtils preferencesUtils;
+    private RoomModel roomModel;
 
+    private final String roomName;
     private final String[] fixtureName;
     private final Boolean[] isOn;
 
@@ -28,8 +31,10 @@ public class FixturesListAdapter extends ArrayAdapter<String> {
     public FixturesListAdapter(Context context, Room room) {
         super(context, R.layout.fixture_list_item, room.getFixtures());
         preferencesUtils = PreferencesUtils.getInstance(context);
+        roomModel = preferencesUtils.getRoomModel();
 
         this.context = context;
+        this.roomName = room.getRoomName();
         this.fixtureName = room.getFixtures();
         this.isOn = room.getIsOn();
     }
@@ -55,7 +60,25 @@ public class FixturesListAdapter extends ArrayAdapter<String> {
                     .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                         @Override
                         public void onCheckedChanged(CompoundButton compoundButton, boolean isOn) {
-                            Log.i(TAG, position+" "+isOn);
+                            for (Room room: roomModel.rooms){
+                                if (room.getRoomName().equals(roomName)){
+                                    Log.i(TAG, room.getIsOn()[position]+"");
+                                    break;
+                                }
+                            }
+                            for (Room room: roomModel.rooms){
+                                if (room.getRoomName().equals(roomName)){
+                                    Log.i(TAG, position+" "+isOn);
+                                    room.updateFixtures(position, isOn);
+                                }
+                            }
+                            for (Room room: roomModel.rooms){
+                                if (room.getRoomName().equals(roomName)){
+                                    Log.i(TAG, room.getIsOn()[position]+"");
+                                    break;
+                                }
+                            }
+                            preferencesUtils.saveRoomModel(roomModel);
                         }
                     });
             convertView.setTag(viewHolder);
@@ -65,9 +88,9 @@ public class FixturesListAdapter extends ArrayAdapter<String> {
 
         viewHolder.fixtureText.setText(fixtureName[position]);
         if (isOn[position]) {
-            viewHolder.fixtureBtn.setChecked(false);
-        } else {
             viewHolder.fixtureBtn.setChecked(true);
+        } else {
+            viewHolder.fixtureBtn.setChecked(false);
         }
 
         viewHolder.position = position;
