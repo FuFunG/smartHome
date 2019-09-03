@@ -10,6 +10,7 @@
 ## Problems
 
 * API rooms is not a array
+* control onchange position of fixture
 
 ## Solutions
 
@@ -28,3 +29,4 @@ while(keys.hasNext()) {
     }
 }
 ```
+* used Holder to handle getting the position of fixtures

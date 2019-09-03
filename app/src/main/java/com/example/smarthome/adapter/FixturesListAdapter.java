@@ -62,20 +62,8 @@ public class FixturesListAdapter extends ArrayAdapter<String> {
                         public void onCheckedChanged(CompoundButton compoundButton, boolean isOn) {
                             for (Room room: roomModel.rooms){
                                 if (room.getRoomName().equals(roomName)){
-                                    Log.i(TAG, room.getIsOn()[position]+"");
-                                    break;
-                                }
-                            }
-                            for (Room room: roomModel.rooms){
-                                if (room.getRoomName().equals(roomName)){
                                     Log.i(TAG, position+" "+isOn);
                                     room.updateFixtures(position, isOn);
-                                }
-                            }
-                            for (Room room: roomModel.rooms){
-                                if (room.getRoomName().equals(roomName)){
-                                    Log.i(TAG, room.getIsOn()[position]+"");
-                                    break;
                                 }
                             }
                             preferencesUtils.saveRoomModel(roomModel);
