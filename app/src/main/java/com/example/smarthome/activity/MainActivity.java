@@ -2,6 +2,7 @@ package com.example.smarthome.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,12 +11,15 @@ import android.widget.ListView;
 
 import com.example.smarthome.R;
 import com.example.smarthome.adapter.RoomListAdapter;
+import com.example.smarthome.asyncTask.RoomAsyncTask;
+import com.example.smarthome.model.RoomModel;
 
 public class MainActivity extends AppCompatActivity {
     private final static String TAG = "MainActivity";
 
     private ListView roomList;
     private String[] listItem = {"a", "b"};
+    private RoomAsyncTask.RoomAsyncCallback roomAsyncCallback;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,11 +30,9 @@ public class MainActivity extends AppCompatActivity {
         initListener();
         initCallback();
 
-        RoomListAdapter adapter = new RoomListAdapter(this, listItem);
-        roomList.setAdapter(adapter);
 
-//        RoomAsyncTask roomAsyncTask = new RoomAsyncTask(roomAsyncCallback);
-//        roomAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        RoomAsyncTask roomAsyncTask = new RoomAsyncTask(roomAsyncCallback);
+        roomAsyncTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public void initView() {
@@ -47,11 +49,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initCallback() {
-//        roomAsyncCallback = new RoomAsyncTask.RoomAsyncCallback() {
-//            @Override
-//            public void roomResponse(RoomModel room) {
-//                Log.i(TAG, String.valueOf(room.getBedroom() != null));
-//            }
-//        };
+        roomAsyncCallback = new RoomAsyncTask.RoomAsyncCallback() {
+            @Override
+            public void roomResponse(RoomModel rooms) {
+                RoomListAdapter adapter = new RoomListAdapter(MainActivity.this, rooms.toStringArray());
+                roomList.setAdapter(adapter);
+            }
+        };
     }
 }
