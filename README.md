@@ -6,3 +6,25 @@
 * Architecture (Activity, Adapter, AsyncTask, Model, PreferencesUtils, Constant)
 * Weather API Periodically
 * SwitchButton
+
+## Problems
+
+* API rooms is not a array
+
+## Solutions
+
+* Loop JSONObject to get all the key
+```
+JSONObject rooms = new JSONObject(json).getJSONObject("rooms");
+Iterator<String> keys = rooms.keys();
+
+while(keys.hasNext()) {
+    String key = keys.next();
+    if (rooms.get(key) instanceof JSONObject) {
+        Log.i("room", key);
+        JSONObject room = (JSONObject) rooms.get(key);
+        JSONArray roomFixtures = room.getJSONArray("fixtures");
+        response.rooms.add(setFixtures(key, roomFixtures));
+    }
+}
+```
