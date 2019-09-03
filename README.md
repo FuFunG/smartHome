@@ -33,4 +33,15 @@ while(keys.hasNext()) {
 * used Holder to handle getting the position of fixtures
 * trying to use AlarmManager
 
+## Remaining Tasks
+
+* Deployment (Heroku)
+* Weather API Periodically
+
+## My Technical Choices
+
+* Created a Room.class to structure the API
+* Shared Preferences will store the RoomModel state and update when user switch any fixtures
+* Created a asyncTask that allow passing a callback function with API call response
+
 
