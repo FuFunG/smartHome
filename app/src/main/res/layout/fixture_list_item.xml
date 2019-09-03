@@ -11,12 +11,11 @@
         android:layout_centerVertical="true"
         android:textSize="22sp"/>
 
-    <Button
+    <Switch
         android:id="@+id/fixture_btn"
-        android:layout_width="60dp"
+        android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:text="@string/on"/>
+        android:layout_centerVertical="true"/>
 
 </RelativeLayout>
