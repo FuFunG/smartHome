@@ -26,6 +26,7 @@ public class RoomAsyncTask extends AsyncTask<String, Void, RoomModel> {
     private RoomAsyncTask.RoomAsyncCallback roomAsyncCallback;
     private RoomModel roomList;
     private List<String> list;
+    private List<Boolean> isOn;
     private Room room;
     private RoomModel response;
 
@@ -88,11 +89,13 @@ public class RoomAsyncTask extends AsyncTask<String, Void, RoomModel> {
     public Room setFixtures(String roomName, JSONArray fixtures) {
         try {
             list = new ArrayList<String>();
+            isOn = new ArrayList<Boolean>();
             for (int i=0; i<fixtures.length(); i++) {
                 list.add(fixtures.getString(i));
+                isOn.add(false);
                 Log.i("setFixtures", fixtures.getString(i));
             }
-            room = new Room(roomName, list.toArray(new String[0]));
+            room = new Room(roomName, list.toArray(new String[list.size()]), isOn.toArray(new Boolean[isOn.size()]));
             return room;
         } catch (Exception e) {
             e.printStackTrace();
