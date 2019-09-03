@@ -2,6 +2,7 @@ package com.example.smarthome.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.smarthome.R;
+import com.example.smarthome.adapter.FixturesListAdapter;
 import com.example.smarthome.adapter.RoomListAdapter;
 import com.example.smarthome.asyncTask.RoomAsyncTask;
 import com.example.smarthome.model.RoomModel;
@@ -18,8 +20,9 @@ public class MainActivity extends AppCompatActivity {
     private final static String TAG = "MainActivity";
 
     private ListView roomList;
-    private String[] listItem = {"a", "b"};
     private RoomAsyncTask.RoomAsyncCallback roomAsyncCallback;
+    private RoomModel roomModel;
+    private boolean[] bundleIsOn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +46,17 @@ public class MainActivity extends AppCompatActivity {
         roomList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.i(TAG, listItem[position]);
+                Log.i(TAG, roomModel.rooms.get(position).roomName);
+                Bundle bundle = new Bundle();
+                bundle.putStringArray("fixtures", roomModel.rooms.get(position).getFixtures());
+                bundleIsOn = new boolean[roomModel.rooms.get(position).getIsOn().length];
+                for (int i=0; i<roomModel.rooms.get(position).getIsOn().length; i++){
+                    bundleIsOn[i] = roomModel.rooms.get(position).getIsOn()[i];
+                }
+                bundle.putBooleanArray("isOn", bundleIsOn);
+                Intent intent = new Intent(MainActivity.this, FixturesActivity.class);
+                intent.putExtras(bundle);
+                startActivity(intent);
             }
         });
     }
@@ -52,7 +65,8 @@ public class MainActivity extends AppCompatActivity {
         roomAsyncCallback = new RoomAsyncTask.RoomAsyncCallback() {
             @Override
             public void roomResponse(RoomModel rooms) {
-                RoomListAdapter adapter = new RoomListAdapter(MainActivity.this, rooms.toStringArray());
+                roomModel = rooms;
+                RoomListAdapter adapter = new RoomListAdapter(MainActivity.this, roomModel.toStringArray());
                 roomList.setAdapter(adapter);
             }
         };
