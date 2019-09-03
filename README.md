@@ -11,6 +11,7 @@
 
 * API rooms is not a array
 * control onchange position of fixture
+* how to handle Weather API Periodically
 
 ## Solutions
 
@@ -30,3 +31,6 @@ while(keys.hasNext()) {
 }
 ```
 * used Holder to handle getting the position of fixtures
+* trying to use AlarmManager
+
+
